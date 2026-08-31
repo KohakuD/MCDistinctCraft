@@ -1,1 +1,7 @@
-{}
+{
+  "distinctcraft.accessibility.baseline": "Initial accessibility baseline",
+  "distinctcraft.accessibility.andesite": "Andesite: horizontal dashes",
+  "distinctcraft.accessibility.gravel": "Gravel: outlined pebbles",
+  "distinctcraft.accessibility.iron_ore": "Iron ore: light angles",
+  "distinctcraft.accessibility.coal_ore": "Coal ore: dark crosses"
+}

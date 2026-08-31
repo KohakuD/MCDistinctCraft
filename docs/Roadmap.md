@@ -3,17 +3,17 @@
 ## 0.1.0 / Initial Accessibility Baseline
 
 - [x] Implement the **client-side** Minecraft 26.2 / NeoForge 26.2.0.75 DistinctCraft base mod setup.
-- [ ] Add and ship initial accessible texture set for:
-  - Stone
+- [x] Establish and ship the initial visual baseline for:
+  - Stone (vanilla reference; no override)
   - Andesite
   - Gravel
   - Iron ore
   - Coal ore
-- [ ] Replace color-only differentiation with a pattern-and-contrast-first visual approach for these blocks.
-- [ ] Keep behavior and resource definitions client-only and document compatibility constraints (no OptiFine reliance).
-- [ ] Add baseline `en_us`, `de_de`, and `nl_nl` entries and keep all three locales in sync.
-- [ ] Add smoke-test level and resource checks for all baseline textures.
-- [ ] Record initial in-game test notes with the target player for baseline blocks.
+- [x] Replace color-only differentiation with a pattern-and-contrast-first visual approach for the four customized blocks.
+- [x] Keep behavior and resource definitions client-only and document compatibility constraints (no OptiFine reliance).
+- [x] Add baseline `en_us`, `de_de`, and `nl_nl` entries and keep all three locales in sync.
+- [x] Add smoke-test level and resource checks for all baseline textures.
+- [x] Record initial in-game test notes with the target player for baseline blocks.
 
 ## 0.2.0 / Profile System + Pattern Variants
 

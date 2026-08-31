@@ -177,6 +177,100 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
+tasks.register('validateBaselineResources') {
+    group = 'verification'
+    description = 'Validates the 0.1.0 baseline textures and locale parity.'
+
+    def textureDirectory = layout.projectDirectory.dir('src/main/resources/assets/minecraft/textures/block')
+    def requiredTextures = ['andesite.png', 'gravel.png', 'iron_ore.png', 'coal_ore.png']
+    def forbiddenTextureOverrides = ['stone.png']
+    def localeDirectory = layout.projectDirectory.dir('src/main/resources/assets/distinctcraft/lang')
+    def requiredLocales = ['en_us.json', 'de_de.json', 'nl_nl.json']
+    def smokeTestFile = layout.projectDirectory.file('src/main/resources/data/distinctcraft/function/baseline_smoke_test.mcfunction')
+
+    inputs.files(requiredTextures.collect { textureDirectory.file(it) })
+    inputs.files(requiredLocales.collect { localeDirectory.file(it) })
+    inputs.file(smokeTestFile)
+
+    doLast {
+        requiredTextures.each { textureName ->
+            def textureFile = textureDirectory.file(textureName).asFile
+            if (!textureFile.isFile()) {
+                throw new GradleException("Missing baseline texture: ${textureFile}")
+            }
+
+            def image = javax.imageio.ImageIO.read(textureFile)
+            if (image == null) {
+                throw new GradleException("Unreadable PNG texture: ${textureFile}")
+            }
+            if (image.width != 16 || image.height != 16) {
+                throw new GradleException("Baseline texture must be 16 x 16: ${textureFile} is ${image.width} x ${image.height}")
+            }
+        }
+
+        forbiddenTextureOverrides.each { textureName ->
+            def textureFile = textureDirectory.file(textureName).asFile
+            if (textureFile.exists()) {
+                throw new GradleException("Vanilla texture must not be overridden: ${textureFile}")
+            }
+        }
+
+        if (!smokeTestFile.asFile.isFile()) {
+            throw new GradleException("Missing baseline smoke-test function: ${smokeTestFile.asFile}")
+        }
+        def smokeTest = smokeTestFile.asFile.text
+        ['dirt', 'stone', 'andesite', 'gravel', 'iron_ore', 'coal_ore'].each { blockName ->
+            if (!smokeTest.contains("minecraft:${blockName}")) {
+                throw new GradleException("Smoke-test function does not include minecraft:${blockName}")
+            }
+        }
+
+        def localeKeys = requiredLocales.collectEntries { localeName ->
+            def localeFile = localeDirectory.file(localeName).asFile
+            if (!localeFile.isFile()) {
+                throw new GradleException("Missing locale: ${localeFile}")
+            }
+            [(localeName): new groovy.json.JsonSlurper().parse(localeFile).keySet()]
+        }
+        def expectedKeys = localeKeys[requiredLocales.first()]
+        localeKeys.each { localeName, keys ->
+            if (keys != expectedKeys) {
+                throw new GradleException("Locale key mismatch in ${localeName}: expected ${expectedKeys}, found ${keys}")
+            }
+        }
+    }
+}
+
+tasks.named('check').configure {
+    dependsOn tasks.named('validateBaselineResources')
+}
+
+def windowPositionHelper = layout.projectDirectory.file('tools/position-minecraft-window.ps1').asFile
+def windowPositionWorkingDirectory = layout.projectDirectory.asFile
+
+def positionMinecraftWindow = tasks.register('positionMinecraftWindow') {
+    group = 'ide'
+    description = 'Starts the Windows helper that places the dev client on the left two thirds of the monitor.'
+    onlyIf { System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows') }
+    inputs.file(windowPositionHelper)
+
+    doLast {
+        new ProcessBuilder(
+                'powershell.exe',
+                '-NoProfile',
+                '-NonInteractive',
+                '-WindowStyle', 'Hidden',
+                '-ExecutionPolicy', 'Bypass',
+                '-File', windowPositionHelper.absolutePath)
+                .directory(windowPositionWorkingDirectory)
+                .start()
+    }
+}
+
+tasks.named('runClient').configure {
+    dependsOn positionMinecraftWindow
+}
+
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {

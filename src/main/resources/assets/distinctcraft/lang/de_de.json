@@ -1,1 +1,7 @@
-{}
+{
+  "distinctcraft.accessibility.baseline": "Erste Barrierefreiheitsbasis",
+  "distinctcraft.accessibility.andesite": "Andesit: horizontale Striche",
+  "distinctcraft.accessibility.gravel": "Kies: umrandete Kiesel",
+  "distinctcraft.accessibility.iron_ore": "Eisenerz: helle Winkel",
+  "distinctcraft.accessibility.coal_ore": "Kohleerz: dunkle Kreuze"
+}

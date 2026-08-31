@@ -1,1 +1,7 @@
-{}
+{
+  "distinctcraft.accessibility.baseline": "Eerste toegankelijkheidsbasis",
+  "distinctcraft.accessibility.andesite": "Andesiet: horizontale streepjes",
+  "distinctcraft.accessibility.gravel": "Grind: omlijnde kiezels",
+  "distinctcraft.accessibility.iron_ore": "IJzererts: lichte hoeken",
+  "distinctcraft.accessibility.coal_ore": "Steenkoolerts: donkere kruisen"
+}
