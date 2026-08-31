@@ -1,12 +1,9 @@
 package ch.minenox.distinctcraft;
 
-import net.neoforged.fml.ModContainer;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.Mod;
 
-@Mod(DistinctCraft.MOD_ID)
+@Mod(value = DistinctCraft.MOD_ID, dist = Dist.CLIENT)
 public final class DistinctCraft {
     public static final String MOD_ID = "distinctcraft";
-
-    public DistinctCraft(ModContainer modContainer) {
-    }
 }

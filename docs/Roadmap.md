@@ -1,9 +1,9 @@
 # DistinctCraft Roadmap
 
-## 0.1.0 – Foundation
+## 0.1.0 – Accessible texture foundation
 
-- [ ] Define the first gameplay feature
-- [ ] Implement deterministic behaviour
-- [ ] Add English and German localisation
-- [ ] Add automated tests
-- [ ] Complete an in-game acceptance test
+- [ ] Add an initial high-contrast texture profile for stone, andesite, gravel, iron ore, and coal ore
+- [ ] Ensure every distinction remains recognizable without color information
+- [ ] Keep English and German localisation aligned
+- [ ] Add automated validation for bundled resources
+- [ ] Complete an in-game acceptance test with the target player

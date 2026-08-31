@@ -19,6 +19,6 @@ These instructions apply to the entire DistinctCraft repository.
 
 - Read README.md, docs/Development.md, and the active docs/Roadmap.md section before code changes.
 - Preserve unrelated local changes.
-- Run `.\\gradlew.bat build` after code changes.
+- Run `.\gradlew.bat build` after code changes.
 - Keep English `en_us` and German `de_de` resources aligned.
 - Do not commit or push unless explicitly requested.
