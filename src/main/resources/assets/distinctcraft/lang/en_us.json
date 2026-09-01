@@ -20,5 +20,6 @@
   "key.distinctcraft.toggle_highlight": "Toggle target outline",
   "message.distinctcraft.profile_changed": "Profile: %s",
   "message.distinctcraft.highlight_enabled": "Target outline enabled",
-  "message.distinctcraft.highlight_disabled": "Target outline disabled"
+  "message.distinctcraft.highlight_disabled": "Target outline disabled",
+  "distinctcraft.smoke.coverage_ready": "DistinctCraft ore wall created; matching drops added to inventory"
 }

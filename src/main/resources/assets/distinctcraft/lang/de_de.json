@@ -20,5 +20,6 @@
   "key.distinctcraft.toggle_highlight": "Zielumrandung umschalten",
   "message.distinctcraft.profile_changed": "Profil: %s",
   "message.distinctcraft.highlight_enabled": "Zielumrandung aktiviert",
-  "message.distinctcraft.highlight_disabled": "Zielumrandung deaktiviert"
+  "message.distinctcraft.highlight_disabled": "Zielumrandung deaktiviert",
+  "distinctcraft.smoke.coverage_ready": "DistinctCraft-Erzwand erstellt; passende Drops wurden dem Inventar hinzugefügt"
 }

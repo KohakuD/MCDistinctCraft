@@ -1,0 +1,14 @@
+{
+  "families": [
+    { "id": "coal", "blocks": ["coal_ore", "deepslate_coal_ore"], "item": "coal" },
+    { "id": "iron", "blocks": ["iron_ore", "deepslate_iron_ore"], "item": "raw_iron" },
+    { "id": "copper", "blocks": ["copper_ore", "deepslate_copper_ore"], "item": "raw_copper" },
+    { "id": "gold", "blocks": ["gold_ore", "deepslate_gold_ore"], "item": "raw_gold" },
+    { "id": "redstone", "blocks": ["redstone_ore", "deepslate_redstone_ore"], "item": "redstone" },
+    { "id": "lapis", "blocks": ["lapis_ore", "deepslate_lapis_ore"], "item": "lapis_lazuli" },
+    { "id": "diamond", "blocks": ["diamond_ore", "deepslate_diamond_ore"], "item": "diamond" },
+    { "id": "emerald", "blocks": ["emerald_ore", "deepslate_emerald_ore"], "item": "emerald" },
+    { "id": "quartz", "blocks": ["nether_quartz_ore"], "item": "quartz" },
+    { "id": "nether_gold", "blocks": ["nether_gold_ore"], "item": "gold_nugget" }
+  ]
+}

@@ -20,5 +20,6 @@
   "key.distinctcraft.toggle_highlight": "Doelomlijning in- of uitschakelen",
   "message.distinctcraft.profile_changed": "Profiel: %s",
   "message.distinctcraft.highlight_enabled": "Doelomlijning ingeschakeld",
-  "message.distinctcraft.highlight_disabled": "Doelomlijning uitgeschakeld"
+  "message.distinctcraft.highlight_disabled": "Doelomlijning uitgeschakeld",
+  "distinctcraft.smoke.coverage_ready": "DistinctCraft-ertswand gemaakt; bijpassende drops zijn aan de inventaris toegevoegd"
 }

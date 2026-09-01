@@ -232,13 +232,25 @@ tasks.register('validateProfileResources') {
     def profiles = ['subtle', 'clear', 'monochrome']
     def requiredTextures = ['andesite.png', 'gravel.png', 'iron_ore.png', 'coal_ore.png']
     def profileRegistration = layout.projectDirectory.file('src/main/java/ch/minenox/distinctcraft/AccessibilityProfile.java')
+    def profileManager = layout.projectDirectory.file('src/main/java/ch/minenox/distinctcraft/ProfileManager.java')
+    def profileDocumentation = layout.projectDirectory.file('docs/Profiles.md')
 
     inputs.dir(profileRoot)
-    inputs.file(profileRegistration)
+    inputs.files(profileRegistration, profileManager, profileDocumentation)
 
     doLast {
         def registrationSource = profileRegistration.asFile.text
+        def managerSource = profileManager.asFile.text
+        def profileDocs = profileDocumentation.asFile.text
         def textureHashes = requiredTextures.collectEntries { [(it): []] }
+
+        if (!managerSource.contains('int profilePackIndex = selectedPacks.size()')
+                || !managerSource.contains('selectedPacks.add(Math.min(profilePackIndex, selectedPacks.size()), profile.packId())')) {
+            throw new GradleException('Profile switching must preserve the selected DistinctCraft pack priority')
+        }
+        if (!profileDocs.contains('Priority with other resource packs')) {
+            throw new GradleException('Profile documentation must explain third-party resource-pack priority')
+        }
 
         profiles.each { profile ->
             if (!registrationSource.contains("\"${profile}\"")) {
@@ -342,10 +354,263 @@ tasks.register('validateClientUxResources') {
     }
 }
 
+tasks.register('validateCoverageResources') {
+    group = 'verification'
+    description = 'Validates 0.4.0 ore blocks, matching item textures, registry names, and smoke-test coverage.'
+    dependsOn tasks.named('createMinecraftArtifacts')
+
+    def profileRoot = layout.projectDirectory.dir('src/main/resources/resourcepacks')
+    def coverageManifest = layout.projectDirectory.file('src/main/resources/assets/distinctcraft/coverage/ore_families.json')
+    def smokeTestFile = layout.projectDirectory.file('src/main/resources/data/distinctcraft/function/coverage_smoke_test.mcfunction')
+    def coverageScreenshot = layout.projectDirectory.file('docs/images/0.4.0-coverage.png')
+    def minecraftArtifact = layout.buildDirectory.file("moddev/artifacts/minecraft-patched-${neo_version}.jar")
+    def profiles = ['subtle', 'clear', 'monochrome']
+
+    inputs.dir(profileRoot)
+    inputs.file(coverageManifest)
+    inputs.file(smokeTestFile)
+    inputs.file(coverageScreenshot)
+    inputs.file(minecraftArtifact)
+
+    doLast {
+        def validateImage = { textureFile, requireTransparency, label ->
+            if (!textureFile.isFile()) {
+                throw new GradleException("Missing ${label} texture: ${textureFile}")
+            }
+            def image = javax.imageio.ImageIO.read(textureFile)
+            if (image == null || image.width != 16 || image.height != 16) {
+                throw new GradleException("${label} texture must be a readable 16 x 16 PNG: ${textureFile}")
+            }
+            if (requireTransparency) {
+                def hasTransparentPixel = false
+                for (int y = 0; y < image.height; y++) {
+                    for (int x = 0; x < image.width; x++) {
+                        if (((image.getRGB(x, y) >>> 24) & 0xFF) == 0) {
+                            hasTransparentPixel = true
+                            break
+                        }
+                    }
+                    if (hasTransparentPixel) break
+                }
+                if (!hasTransparentPixel) {
+                    throw new GradleException("${label} item texture must retain a transparent background: ${textureFile}")
+                }
+            }
+            else {
+                for (int y = 0; y < image.height; y++) {
+                    for (int x = 0; x < image.width; x++) {
+                        if (((image.getRGB(x, y) >>> 24) & 0xFF) != 255) {
+                            throw new GradleException("${label} world texture must remain fully opaque: ${textureFile}")
+                        }
+                    }
+                }
+            }
+        }
+        def digest = { file ->
+            java.security.MessageDigest.getInstance('SHA-256').digest(file.bytes).encodeHex().toString()
+        }
+
+        def manifest = new groovy.json.JsonSlurper().parse(coverageManifest.asFile)
+        def families = manifest.families
+        if (!(families instanceof List) || families.size() != 10) {
+            throw new GradleException('Coverage manifest must define exactly ten ore families')
+        }
+
+        def familyIds = families.collect { it.id }
+        def blockNames = families.collectMany { it.blocks }
+        def itemNames = families.collect { it.item }
+        if (familyIds.toSet().size() != familyIds.size()) {
+            throw new GradleException('Coverage manifest contains duplicate family ids')
+        }
+        if (blockNames.size() != 18 || blockNames.toSet().size() != blockNames.size()) {
+            throw new GradleException('Coverage manifest must define 18 unique ore blocks')
+        }
+        if (itemNames.size() != 10 || itemNames.toSet().size() != itemNames.size()) {
+            throw new GradleException('Coverage manifest must define ten unique matching items')
+        }
+
+        def textureHashes = (blockNames + itemNames).collectEntries { [(it): []] }
+        profiles.each { profile ->
+            blockNames.each { blockName ->
+                def textureFile = profileRoot.file("${profile}/assets/minecraft/textures/block/${blockName}.png").asFile
+                validateImage(textureFile, false, "${profile} block ${blockName}")
+                textureHashes[blockName] << digest(textureFile)
+                if (new File(textureFile.parentFile, textureFile.name + '.mcmeta').exists()) {
+                    throw new GradleException("Animated or emissive metadata is not allowed for ore texture: ${textureFile}")
+                }
+            }
+            itemNames.each { itemName ->
+                def textureFile = profileRoot.file("${profile}/assets/minecraft/textures/item/${itemName}.png").asFile
+                validateImage(textureFile, true, "${profile} item ${itemName}")
+                textureHashes[itemName] << digest(textureFile)
+            }
+        }
+
+        textureHashes.each { textureName, hashes ->
+            if (hashes.toSet().size() != profiles.size()) {
+                throw new GradleException("Every profile must provide a distinct ${textureName} variant")
+            }
+        }
+
+        def smokeTest = smokeTestFile.asFile.text
+        blockNames.each { blockName ->
+            if (!smokeTest.contains("minecraft:${blockName}")) {
+                throw new GradleException("Coverage smoke test is missing block minecraft:${blockName}")
+            }
+        }
+        itemNames.each { itemName ->
+            if (!smokeTest.contains("give @s minecraft:${itemName}")) {
+                throw new GradleException("Coverage smoke test is missing item minecraft:${itemName}")
+            }
+        }
+        if (!smokeTest.contains('minecraft:dirt')) {
+            throw new GradleException('Coverage smoke test must retain dirt as a contrast reference')
+        }
+
+        def gameJar = minecraftArtifact.get().asFile
+        if (!gameJar.isFile()) {
+            throw new GradleException("Missing patched Minecraft artifact for registry validation: ${gameJar}")
+        }
+        def zip = new java.util.zip.ZipFile(gameJar)
+        try {
+            blockNames.each { blockName ->
+                if (zip.getEntry("assets/minecraft/blockstates/${blockName}.json") == null) {
+                    throw new GradleException("Unknown Minecraft 26.2 block in coverage manifest: ${blockName}")
+                }
+            }
+            itemNames.each { itemName ->
+                if (zip.getEntry("assets/minecraft/items/${itemName}.json") == null) {
+                    throw new GradleException("Unknown Minecraft 26.2 item in coverage manifest: ${itemName}")
+                }
+            }
+        }
+        finally {
+            zip.close()
+        }
+
+        def screenshot = javax.imageio.ImageIO.read(coverageScreenshot.asFile)
+        if (screenshot == null || screenshot.width < 1000 || screenshot.height < 600) {
+            throw new GradleException('0.4.0 coverage contact sheet is missing or too small')
+        }
+    }
+}
+
+tasks.register('validateCompatibilityResources') {
+    group = 'verification'
+    description = 'Validates the pinned 0.5.0 Jade and WTHIT compatibility-test setup.'
+
+    def manifestFile = layout.projectDirectory.file('tools/compatibility-mods.json')
+    def selectorFile = layout.projectDirectory.file('tools/select-compatibility-mod.ps1')
+    def verifierFile = layout.projectDirectory.file('tools/verify-compatibility-log.ps1')
+    def testNotesFile = layout.projectDirectory.file('docs/testing/0.5.0-compatibility.md')
+    def futureExtensionsFile = layout.projectDirectory.file('docs/Future-Extensions.md')
+    def modMetadataFile = layout.projectDirectory.file('src/main/templates/META-INF/neoforge.mods.toml')
+    def javaRoot = layout.projectDirectory.dir('src/main/java')
+    def expectedMinecraftVersion = minecraft_version.toString()
+    def expectedNeoForgeVersion = neo_version.toString()
+
+    inputs.files(manifestFile, selectorFile, verifierFile, testNotesFile, futureExtensionsFile, modMetadataFile)
+    inputs.dir(javaRoot)
+
+    doLast {
+        def manifest = new groovy.json.JsonSlurper().parse(manifestFile.asFile)
+        if (manifest.minecraft != expectedMinecraftVersion || manifest.neoforge != expectedNeoForgeVersion) {
+            throw new GradleException('Compatibility matrix must match the configured Minecraft and NeoForge versions')
+        }
+        if (manifest.providers.keySet() as Set != ['jade', 'wthit'] as Set) {
+            throw new GradleException('Compatibility matrix must contain exactly Jade and WTHIT')
+        }
+        if (manifest.providers.jade.version != '26.2.10+neoforge') {
+            throw new GradleException('Jade compatibility must remain pinned to 26.2.10+neoforge for 0.5.0')
+        }
+        if (manifest.providers.wthit.version != 'neo-20.0.0') {
+            throw new GradleException('WTHIT compatibility must remain pinned to neo-20.0.0 for 0.5.0')
+        }
+
+        def filenames = []
+        manifest.providers.each { providerName, provider ->
+            if (!provider.modId || !provider.files) {
+                throw new GradleException("Incomplete compatibility provider: ${providerName}")
+            }
+            provider.files.each { file ->
+                if (!(file.filename ==~ /[A-Za-z0-9.+_-]+\.jar/)) {
+                    throw new GradleException("Unsafe compatibility filename: ${file.filename}")
+                }
+                if (!file.url.startsWith('https://cdn.modrinth.com/')) {
+                    throw new GradleException("Compatibility downloads must use the official Modrinth CDN: ${file.url}")
+                }
+                if (!(file.sha512 ==~ /[0-9a-f]{128}/)) {
+                    throw new GradleException("Invalid SHA-512 for compatibility file: ${file.filename}")
+                }
+                filenames << file.filename
+            }
+        }
+        if (filenames.size() != filenames.toSet().size()) {
+            throw new GradleException('Compatibility filenames must be unique')
+        }
+
+        def metadata = modMetadataFile.asFile.text
+        ['jade', 'wthit', 'badpackets'].each { modId ->
+            if (metadata.contains("modId=\"${modId}\"")) {
+                throw new GradleException("Overlay test mod must not become a packaged dependency: ${modId}")
+            }
+        }
+
+        def forbiddenApiReferences = ['snownee.jade', 'mcp.mobius.waila']
+        javaRoot.asFileTree.matching { include '**/*.java' }.files.each { sourceFile ->
+            def source = sourceFile.text
+            forbiddenApiReferences.each { reference ->
+                if (source.contains(reference)) {
+                    throw new GradleException("Optional overlay API leaked into production source: ${reference} in ${sourceFile}")
+                }
+            }
+        }
+
+        def selector = selectorFile.asFile.text
+        def verifier = verifierFile.asFile.text
+        def testNotes = testNotesFile.asFile.text
+        def futureExtensions = futureExtensionsFile.asFile.text
+        ['jade', 'wthit'].each { providerName ->
+            if (!selector.contains(providerName) || !verifier.contains(providerName) || !testNotes.toLowerCase(Locale.ROOT).contains(providerName)) {
+                throw new GradleException("Compatibility tooling or documentation is missing provider: ${providerName}")
+            }
+        }
+        if (!testNotes.contains('coverage_smoke_test')) {
+            throw new GradleException('Compatibility test notes must retain the coverage smoke test')
+        }
+        ['Resource add-on', 'Profile parity', 'Runtime adapter only when necessary', 'no world scans', 'no Jade API dependency'].each { requirement ->
+            if (!futureExtensions.contains(requirement)) {
+                throw new GradleException("Future-extension safety plan is missing: ${requirement}")
+            }
+        }
+    }
+}
+
 tasks.named('check').configure {
     dependsOn tasks.named('validateBaselineResources')
     dependsOn tasks.named('validateProfileResources')
     dependsOn tasks.named('validateClientUxResources')
+    dependsOn tasks.named('validateCoverageResources')
+    dependsOn tasks.named('validateCompatibilityResources')
+}
+
+def compatibilitySelector = layout.projectDirectory.file('tools/select-compatibility-mod.ps1').asFile
+
+['Jade': 'jade', 'Wthit': 'wthit'].each { taskSuffix, providerName ->
+    tasks.register("use${taskSuffix}Compatibility", Exec) {
+        group = 'ide'
+        description = "Downloads, verifies, and selects ${providerName} as the exclusive overlay mod for runClient."
+        onlyIf { System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows') }
+        inputs.file(layout.projectDirectory.file('tools/compatibility-mods.json'))
+        inputs.file(compatibilitySelector)
+        outputs.upToDateWhen { false }
+        commandLine 'powershell.exe',
+                '-NoProfile',
+                '-NonInteractive',
+                '-ExecutionPolicy', 'Bypass',
+                '-File', compatibilitySelector.absolutePath,
+                providerName
+    }
 }
 
 def windowPositionHelper = layout.projectDirectory.file('tools/position-minecraft-window.ps1').asFile

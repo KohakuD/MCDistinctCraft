@@ -20,7 +20,7 @@ DistinctCraft makes Minecraft blocks and ores easier to distinguish through acce
 
 ## Accessibility profiles and controls
 
-Version 0.3.0 includes the built-in `clear`, `subtle`, and `monochrome` profiles, an in-game accessibility screen, quick profile switching, and optional target feedback. See [docs/Profiles.md](docs/Profiles.md) and [docs/Accessibility.md](docs/Accessibility.md) for usage guidance.
+Version 0.5.0 includes the built-in `clear`, `subtle`, and `monochrome` profiles, an in-game accessibility screen, quick profile switching, optional target feedback, all standard Overworld ore variants, Nether quartz and gold, and matching primary drops. Jade and WTHIT are supported as optional, mutually exclusive overlay mods for compatibility testing; Jade is the preferred local test provider. See [docs/Profiles.md](docs/Profiles.md), [docs/Accessibility.md](docs/Accessibility.md), [docs/No-Xray.md](docs/No-Xray.md), [docs/Future-Extensions.md](docs/Future-Extensions.md), and [docs/testing/0.5.0-compatibility.md](docs/testing/0.5.0-compatibility.md).
 
 ## License
 

@@ -31,9 +31,22 @@ public final class ProfileManager {
 
         List<String> selectedPacks = repository.getSelectedPacks().stream()
                 .map(Pack::getId)
-                .filter(packId -> !AccessibilityProfile.isProfilePack(packId))
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        selectedPacks.add(profile.packId());
+        int profilePackIndex = selectedPacks.size();
+        for (int index = selectedPacks.size() - 1; index >= 0; index--) {
+            if (AccessibilityProfile.isProfilePack(selectedPacks.get(index))) {
+                profilePackIndex = 0;
+                for (int lowerIndex = 0; lowerIndex < index; lowerIndex++) {
+                    if (!AccessibilityProfile.isProfilePack(selectedPacks.get(lowerIndex))) {
+                        profilePackIndex++;
+                    }
+                }
+                break;
+            }
+        }
+
+        selectedPacks.removeIf(AccessibilityProfile::isProfilePack);
+        selectedPacks.add(Math.min(profilePackIndex, selectedPacks.size()), profile.packId());
         repository.setSelected(selectedPacks);
         minecraft.options.updateResourcePacks(repository);
 

@@ -1,0 +1,39 @@
+{
+  "minecraft": "26.2",
+  "neoforge": "26.2.0.75",
+  "providers": {
+    "jade": {
+      "displayName": "Jade",
+      "modId": "jade",
+      "version": "26.2.10+neoforge",
+      "logName": "Jade",
+      "logVersion": "26.2.10+neoforge",
+      "files": [
+        {
+          "filename": "Jade-mc26.2-NeoForge-26.2.10.jar",
+          "url": "https://cdn.modrinth.com/data/nvQzSEkH/versions/GBES6etT/Jade-mc26.2-NeoForge-26.2.10.jar",
+          "sha512": "23c4ce0e0aec0d70b38ba5c8a346e5233aaa3923a94f54dc1b412e48ef98d394d3a1ac3ceaa9fe674dc1653bbef489a228be167f011d163db7ae6e4a947051b9"
+        }
+      ]
+    },
+    "wthit": {
+      "displayName": "WTHIT",
+      "modId": "wthit",
+      "version": "neo-20.0.0",
+      "logName": "wthit",
+      "logVersion": "20.0.0",
+      "files": [
+        {
+          "filename": "wthit-26.2-neo-20.0.0.jar",
+          "url": "https://cdn.modrinth.com/data/6AQIaxuO/versions/nYkvtEUa/wthit-26.2-neo-20.0.0.jar",
+          "sha512": "9745804e0bdefa99194e1a099eb424f6f9d3f96531ae44141d9ec393925d3c6bbd85ccb6dd11b3456675943073aafd31220465f96551d34d9648cb84bc842ba8"
+        },
+        {
+          "filename": "badpackets-neo-0.12.2.jar",
+          "url": "https://cdn.modrinth.com/data/ftdbN0KK/versions/8PgyQyuN/badpackets-neo-0.12.2.jar",
+          "sha512": "d248af87c2c969452ed82ac2258a52202dcbb017f5d5cc50a91f39ffaa141fa6886e4a8616e4150428f140ad62c24de37eb9e52a0bac5ca911190b6e0db37fe1"
+        }
+      ]
+    }
+  }
+}

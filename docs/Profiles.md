@@ -1,6 +1,6 @@
 # DistinctCraft Profiles
 
-DistinctCraft 0.2.0 includes three bundled resource-pack profiles. They use the same block patterns with different contrast ranges.
+DistinctCraft 0.5.0 includes three bundled resource-pack profiles. They use the same block and matching inventory-item patterns with different contrast ranges.
 
 ## Which profile should I choose?
 
@@ -19,3 +19,13 @@ DistinctCraft 0.2.0 includes three bundled resource-pack profiles. They use the 
 Clear is selected automatically when no profile has been chosen yet. Minecraft stores the enabled resource-pack list in its normal options, so the selected profile persists across restarts.
 
 All profiles use standard Minecraft resource-pack behavior and require neither OptiFine nor another rendering mod.
+
+## Priority with other resource packs
+
+Minecraft lets the higher pack in the **Selected** list override matching files from packs below it. Put a third-party pack above DistinctCraft when its version of an overlapping texture should win. Put DistinctCraft above it when the accessibility pattern should win. Textures that only one of the packs provides are unaffected.
+
+Switching between Clear, Subtle, and Monochrome keeps DistinctCraft at its existing priority. It also removes any accidentally selected second DistinctCraft profile, so exactly one remains active. When no DistinctCraft profile was selected before, Clear or the newly selected profile is added at the normal highest selected priority and can then be moved in Minecraft's resource-pack screen.
+
+## Covered ore families
+
+Coal, iron, copper, gold, redstone, lapis, diamond, and emerald include both stone and deepslate variants. Nether quartz and Nether gold are also covered. Their primary drops use matching shapes in the inventory. Ancient debris is intentionally excluded from 0.4.0 because its directional top/side textures make it a separate design case.

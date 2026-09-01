@@ -40,22 +40,22 @@
 
 ## 0.4.0 / Coverage Expansion (No X-ray, No Gameplay Advantage)
 
-- [ ] Add additional vanilla ores and matching inventory-item textures.
-- [ ] Extend profile support to inventory textures while preserving world texture readability.
-- [ ] Confirm no X-ray-like behavior or luminance tricks that expose hidden blocks.
-- [ ] Extend automated validation to include inventory texture completeness and registry consistency.
-- [ ] Add changelog and screenshots showcasing all new block and inventory profiles.
-- [ ] Validate feedback from the target player after adding the broader ore set.
+- [x] Add additional vanilla ores and matching inventory-item textures.
+- [x] Extend profile support to inventory textures while preserving world texture readability.
+- [x] Confirm no X-ray-like behavior or luminance tricks that expose hidden blocks.
+- [x] Extend automated validation to include inventory texture completeness and registry consistency.
+- [x] Add changelog and screenshots showcasing all new block and inventory profiles.
+- [x] Validate feedback from the target player after adding the broader ore set.
 
 ## 0.5.0 / Compatibility and Future Extensions
 
-- [ ] Keep Jade compatibility intact and verify against Jade 26.2.10 first.
-- [ ] Prepare optional Jade integration path (off by default, compatible later).
-- [ ] Add optional NeoForge-based emissive layers for visible ore surfaces only (feature-gated and never through walls).
-- [ ] Verify resource-pack priority and document interaction with third-party texture packs.
-- [ ] Add staged compatibility plan for modded blocks.
-- [ ] Add integration smoke tests for no-conflict operation with common client mods.
-- [ ] Keep resource and localization quality gates unchanged (no regressions in `en_us`/`de_de`/`nl_nl`).
+- [x] Keep Jade compatibility intact and verify against Jade 26.2.10 first.
+- [x] Prepare optional Jade integration path (off by default, compatible later); no integration is currently needed because vanilla block identity remains intact.
+- [x] Evaluate optional NeoForge-based emissive layers; defer them after review so 0.5.0 remains texture-only and revisit only if in-game readability proves insufficient.
+- [x] Verify resource-pack priority, preserve it during profile changes, and document interaction with third-party texture packs.
+- [x] Add staged compatibility plan for modded blocks.
+- [x] Add integration smoke tests for no-conflict operation with common client mods; Jade 26.2.10 and WTHIT 20.0.0 are verified as mutually exclusive overlay alternatives.
+- [x] Keep resource and localization quality gates unchanged (no regressions in `en_us`/`de_de`/`nl_nl`).
 
 ## 0.6.0 / Release Readiness
 
