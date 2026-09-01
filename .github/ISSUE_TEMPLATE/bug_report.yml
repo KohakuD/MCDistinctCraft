@@ -1,0 +1,79 @@
+name: Bug report
+description: Report a reproducible problem with DistinctCraft.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve DistinctCraft. Please remove personal information from logs and screenshots before uploading them.
+  - type: input
+    id: distinctcraft_version
+    attributes:
+      label: DistinctCraft version
+      placeholder: "0.6.0"
+    validations:
+      required: true
+  - type: input
+    id: minecraft_version
+    attributes:
+      label: Minecraft version
+      placeholder: "26.2"
+    validations:
+      required: true
+  - type: input
+    id: neoforge_version
+    attributes:
+      label: NeoForge version
+      placeholder: "26.2.0.75"
+    validations:
+      required: true
+  - type: dropdown
+    id: profile
+    attributes:
+      label: DistinctCraft profile
+      options:
+        - Clear
+        - Subtle
+        - Monochrome
+        - Unknown or not applicable
+    validations:
+      required: true
+  - type: textarea
+    id: other_mods
+    attributes:
+      label: Other client mods and resource packs
+      description: Include overlay mods such as Jade and packs that may override DistinctCraft textures.
+      placeholder: "Jade 26.2.10; no additional resource packs"
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Explain the actual result and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Select the Clear profile
+        2. Open a world
+        3. Look at an iron ore block
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs or screenshots
+      description: Drag files here after removing usernames, local paths, server addresses, and other private information.
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Checks
+      options:
+        - label: I tested without unrelated third-party resource packs, or I identified the pack involved.
+          required: true
+        - label: I checked that this problem has not already been reported.
+          required: true

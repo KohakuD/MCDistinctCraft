@@ -159,6 +159,13 @@ sourceSets.main.resources.srcDir generateModMetadata
 // To avoid having to run "generateModMetadata" manually, make it run on every project reload
 neoForge.ideSyncTask generateModMetadata
 
+tasks.named('jar', Jar).configure {
+    from('LICENSE') { into 'META-INF' }
+    from('LICENSE-CODE') { into 'META-INF' }
+    from('LICENSE-ASSETS.md') { into 'META-INF' }
+    from('NOTICE.md') { into 'META-INF' }
+}
+
 // Example configuration to allow publishing using the maven-publish plugin
 publishing {
     publications {
@@ -586,12 +593,117 @@ tasks.register('validateCompatibilityResources') {
     }
 }
 
+tasks.register('validateReleaseResources') {
+    group = 'verification'
+    description = 'Validates the 0.6.0 release identity, licensing, support files, branding, and packaged metadata.'
+    dependsOn tasks.named('generateModMetadata')
+    dependsOn tasks.named('jar')
+
+    def propertiesFile = layout.projectDirectory.file('gradle.properties')
+    def metadataTemplate = layout.projectDirectory.file('src/main/templates/META-INF/neoforge.mods.toml')
+    def generatedMetadata = layout.buildDirectory.file('generated/sources/modMetadata/META-INF/neoforge.mods.toml')
+    def packagedJar = tasks.named('jar', Jar).flatMap { it.archiveFile }
+    def modLogo = layout.projectDirectory.file('src/main/resources/distinctcraft.png')
+    def logoSource = layout.projectDirectory.file('docs/assets/branding/distinctcraft-logo.svg')
+    def curseForgeLogo = layout.projectDirectory.file('docs/assets/branding/distinctcraft-logo.png')
+    def brandingExporter = layout.projectDirectory.file('tools/export-branding.ps1')
+    def noticeFile = layout.projectDirectory.file('NOTICE.md')
+    def requiredReleaseFiles = [
+            'LICENSE',
+            'LICENSE-CODE',
+            'LICENSE-ASSETS.md',
+            'NOTICE.md',
+            'SUPPORT.md',
+            'docs/Branding.md',
+            'docs/CurseForge.md',
+            '.github/ISSUE_TEMPLATE/bug_report.yml',
+            '.github/ISSUE_TEMPLATE/accessibility_feedback.yml'
+    ].collect { layout.projectDirectory.file(it) }
+
+    inputs.files(propertiesFile, metadataTemplate, generatedMetadata, modLogo, logoSource, curseForgeLogo, brandingExporter, packagedJar)
+    inputs.files(requiredReleaseFiles)
+
+    doLast {
+        def properties = new Properties()
+        propertiesFile.asFile.withInputStream { properties.load(it) }
+        if (properties.getProperty('mod_version') != '0.6.0') {
+            throw new GradleException('Release readiness expects mod_version 0.6.0')
+        }
+        if (properties.getProperty('mod_authors') != 'KohakuD') {
+            throw new GradleException('Release author must be KohakuD')
+        }
+        if (properties.getProperty('mod_license') != 'MIT (code); CC BY 4.0 (visual assets)') {
+            throw new GradleException('Release metadata must retain the documented dual-license summary')
+        }
+
+        requiredReleaseFiles.each { releaseFile ->
+            if (!releaseFile.asFile.isFile() || releaseFile.asFile.length() == 0) {
+                throw new GradleException("Missing or empty release file: ${releaseFile.asFile}")
+            }
+        }
+
+        def template = metadataTemplate.asFile.text
+        def generated = generatedMetadata.get().asFile.text
+        ['https://github.com/KohakuD/MCDistinctCraft', 'logoFile="distinctcraft.png"'].each { expected ->
+            if (!template.contains(expected)) {
+                throw new GradleException("Mod metadata template is missing: ${expected}")
+            }
+        }
+        ['version="0.6.0"', 'authors="KohakuD"', 'logoFile="distinctcraft.png"'].each { expected ->
+            if (!generated.contains(expected)) {
+                throw new GradleException("Generated mod metadata is missing: ${expected}")
+            }
+        }
+
+        def validatePng = { file, expectedSize, label ->
+            def image = javax.imageio.ImageIO.read(file)
+            if (image == null || image.width != expectedSize || image.height != expectedSize) {
+                throw new GradleException("${label} must be a readable ${expectedSize} x ${expectedSize} PNG: ${file}")
+            }
+        }
+        validatePng(modLogo.asFile, 256, 'Packaged mod logo')
+        validatePng(curseForgeLogo.asFile, 1024, 'CurseForge logo export')
+
+        def documentBuilderFactory = javax.xml.parsers.DocumentBuilderFactory.newInstance()
+        documentBuilderFactory.setNamespaceAware(true)
+        def svg = documentBuilderFactory.newDocumentBuilder().parse(logoSource.asFile).documentElement
+        if (svg.localName != 'svg' || svg.getAttribute('viewBox') != '0 0 512 512') {
+            throw new GradleException('Canonical logo source must be an SVG with viewBox="0 0 512 512"')
+        }
+
+        def notice = noticeFile.asFile.text
+        if (!notice.contains('NOT AN OFFICIAL MINECRAFT PRODUCT')) {
+            throw new GradleException('NOTICE.md must retain the unofficial Minecraft product disclaimer')
+        }
+
+        def archive = new java.util.zip.ZipFile(packagedJar.get().asFile)
+        try {
+            [
+                    'META-INF/neoforge.mods.toml',
+                    'distinctcraft.png',
+                    'META-INF/LICENSE',
+                    'META-INF/LICENSE-CODE',
+                    'META-INF/LICENSE-ASSETS.md',
+                    'META-INF/NOTICE.md'
+            ].each { entryName ->
+                if (archive.getEntry(entryName) == null) {
+                    throw new GradleException("Packaged JAR is missing release entry: ${entryName}")
+                }
+            }
+        }
+        finally {
+            archive.close()
+        }
+    }
+}
+
 tasks.named('check').configure {
     dependsOn tasks.named('validateBaselineResources')
     dependsOn tasks.named('validateProfileResources')
     dependsOn tasks.named('validateClientUxResources')
     dependsOn tasks.named('validateCoverageResources')
     dependsOn tasks.named('validateCompatibilityResources')
+    dependsOn tasks.named('validateReleaseResources')
 }
 
 def compatibilitySelector = layout.projectDirectory.file('tools/select-compatibility-mod.ps1').asFile

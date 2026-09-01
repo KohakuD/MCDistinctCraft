@@ -1,7 +1,15 @@
-Copyright (c) 2026 ID7ZH
+DistinctCraft licensing
+=======================
 
-All Rights Reserved.
+Copyright (c) 2026 KohakuD
 
-No permission is granted to copy, modify, distribute, sublicense, or sell this
-software or its assets without prior written permission from the copyright
-holder.
+DistinctCraft uses separate licenses for source code and original visual assets:
+
+1. Source code, build scripts, configuration, and original documentation text are licensed under the MIT License. See `LICENSE-CODE`.
+2. Original DistinctCraft textures, logos, icons, and other visual assets are licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0). See `LICENSE-ASSETS.md`.
+
+Files that identify a different license retain that license. In particular, the NeoForge template files are covered by `TEMPLATE_LICENSE.txt`.
+
+Minecraft, the Minecraft name, and Minecraft game content are not licensed by this project. They are owned by Mojang Studios and/or Microsoft. Screenshots may contain Minecraft content; the DistinctCraft licenses apply only to the original DistinctCraft contributions in them to the extent that KohakuD can license those contributions.
+
+DistinctCraft is not an official Minecraft product. It is not approved by or associated with Mojang Studios or Microsoft.

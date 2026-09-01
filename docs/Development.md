@@ -12,7 +12,7 @@ On Windows, `runClient` starts a short-lived helper that places the Minecraft wi
 
 ## Resource validation
 
-The build runs `validateBaselineResources`, `validateProfileResources`, `validateClientUxResources`, `validateCoverageResources`, and `validateCompatibilityResources` automatically. They verify locale parity, smoke-test coverage, pack metadata and priority handling, registration, complete 16 x 16 PNG sets for all profiles, distinct variants, the absence of a stone override, translated controls, Minecraft 26.2 registry names, transparent item backgrounds, the no-emissive coverage boundary, and the reproducible Jade/WTHIT compatibility matrix.
+The build runs `validateBaselineResources`, `validateProfileResources`, `validateClientUxResources`, `validateCoverageResources`, `validateCompatibilityResources`, and `validateReleaseResources` automatically. They verify locale parity, smoke-test coverage, pack metadata and priority handling, registration, complete 16 x 16 PNG sets for all profiles, distinct variants, the absence of a stone override, translated controls, Minecraft 26.2 registry names, transparent item backgrounds, the no-emissive coverage boundary, the reproducible Jade/WTHIT compatibility matrix, and the 0.6.0 identity, licenses, support files, branding exports, and packaged metadata.
 
 Regenerate the checked-in baseline textures after changing their pixel maps with:
 

@@ -59,7 +59,7 @@
 
 ## 0.6.0 / Release Readiness
 
-- [ ] Add mod icon and polished metadata for distribution.
+- [x] Add mod icon and polished metadata for distribution.
 - [ ] Include release screenshots for all profile modes and key screens.
 - [ ] Final QA for packaged resource validation, locale parity, and profile switching.
 - [ ] Publish CurseForge release with clear installation and usage notes.

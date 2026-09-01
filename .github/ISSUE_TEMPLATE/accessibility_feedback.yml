@@ -1,0 +1,58 @@
+name: Accessibility feedback
+description: Tell us which texture, profile, or control is difficult to distinguish.
+title: "[Accessibility]: "
+labels:
+  - accessibility
+body:
+  - type: markdown
+    attributes:
+      value: |
+        First-hand feedback is especially valuable. You never need to disclose a diagnosis or medical information.
+  - type: dropdown
+    id: profile
+    attributes:
+      label: Profile used
+      options:
+        - Clear
+        - Subtle
+        - Monochrome
+        - Several profiles
+    validations:
+      required: true
+  - type: input
+    id: affected_content
+    attributes:
+      label: Affected block, item, or control
+      placeholder: "Deepslate iron ore"
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Viewing conditions
+      description: Mention lighting, distance, display settings, shaders, and other resource packs when relevant.
+      placeholder: "Dark cave, normal brightness, no shaders"
+  - type: textarea
+    id: difficulty
+    attributes:
+      label: What is difficult to perceive?
+      description: Describe which things look too similar or which pattern feels unclear.
+    validations:
+      required: true
+  - type: textarea
+    id: improvement
+    attributes:
+      label: What would help?
+      description: Optional suggestions are welcome, but identifying the problem is already useful.
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Optional screenshot
+      description: Drag an image here after removing usernames, server addresses, and other private information.
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Checks
+      options:
+        - label: I checked that this feedback has not already been reported.
+          required: true

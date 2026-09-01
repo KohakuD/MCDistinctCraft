@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 - Release readiness
+
+- Updated the public author identity and project links from ID7ZH to KohakuD.
+- Added structured GitHub forms for bug reports and accessibility feedback.
+- Licensed source code under MIT and original DistinctCraft visual assets under CC BY 4.0, with explicit Minecraft and third-party exclusions.
+- Added an original, editable SVG brand symbol plus optimized NeoForge and CurseForge PNG exports.
+- Added automated release validation for identity, licensing, support files, branding, and packaged metadata.
+
 ## 0.5.0 - Compatibility and future extensions
 
 - Pinned reproducible, mutually exclusive development tests for Jade 26.2.10 and WTHIT 20.0.0.

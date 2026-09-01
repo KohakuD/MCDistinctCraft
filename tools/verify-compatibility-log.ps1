@@ -9,6 +9,12 @@ Set-StrictMode -Version Latest
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $manifest = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'compatibility-mods.json') -Raw | ConvertFrom-Json
+$gradleProperties = Get-Content -LiteralPath (Join-Path $repositoryRoot 'gradle.properties')
+$modVersionLine = $gradleProperties | Where-Object { $_ -match '^mod_version=' } | Select-Object -First 1
+if (-not $modVersionLine) {
+    throw 'gradle.properties does not define mod_version.'
+}
+$modVersion = ($modVersionLine -split '=', 2)[1].Trim()
 $logPath = Join-Path $repositoryRoot 'run/logs/latest.log'
 $selectionPath = Join-Path $repositoryRoot 'run/compatibility-provider.txt'
 
@@ -30,7 +36,7 @@ $otherProvider = if ($Provider -eq 'jade') { 'wthit' } else { 'jade' }
 $other = $manifest.providers.$otherProvider
 
 $requiredPatterns = @(
-    "DistinctCraft 0.5.0 \(distinctcraft\)",
+    "DistinctCraft $([regex]::Escape($modVersion)) \(distinctcraft\)",
     "Minecraft $([regex]::Escape($manifest.minecraft)) \(minecraft\)",
     "NeoForge $([regex]::Escape($manifest.neoforge)) \(neoforge\)",
     "$([regex]::Escape($selected.logName)) $([regex]::Escape($selected.logVersion)) \($([regex]::Escape($selected.modId))\)",

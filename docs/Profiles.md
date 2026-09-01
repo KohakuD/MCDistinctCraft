@@ -1,6 +1,6 @@
 # DistinctCraft Profiles
 
-DistinctCraft 0.5.0 includes three bundled resource-pack profiles. They use the same block and matching inventory-item patterns with different contrast ranges.
+DistinctCraft 0.6.0 includes three bundled resource-pack profiles. They use the same block and matching inventory-item patterns with different contrast ranges.
 
 ## Which profile should I choose?
 
