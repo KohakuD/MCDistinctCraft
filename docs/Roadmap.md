@@ -17,26 +17,26 @@
 
 ## 0.2.0 / Profile System + Pattern Variants
 
-- [ ] Introduce a built-in profile system loaded as bundled resource-pack profiles:
+- [x] Introduce a built-in profile system loaded as bundled resource-pack profiles:
   - `subtle`
   - `clear`
   - `monochrome`
-- [ ] Add profile switching in-game and persistence of user-selected profile.
-- [ ] Add UI labels and descriptions for each profile in `en_us`, `de_de`, and `nl_nl`.
-- [ ] Add automated checks that validate profile assets are complete and correctly referenced.
-- [ ] Ensure every profile works without OptiFine or another rendering mod.
-- [ ] Ship first documentation pass describing “what to choose when” for each profile.
+- [x] Add profile switching in-game and persistence of user-selected profile.
+- [x] Add UI labels and descriptions for each profile in `en_us`, `de_de`, and `nl_nl`.
+- [x] Add automated checks that validate profile assets are complete and correctly referenced.
+- [x] Ensure every profile works without OptiFine or another rendering mod.
+- [x] Ship first documentation pass describing “what to choose when” for each profile.
 
 ## 0.3.0 / UX, Controls and Feedback
 
-- [ ] Add mod configuration menu (client-side) for profile and accessibility preferences.
-- [ ] Add keybinds for fast profile toggling and quick contrast settings.
-- [ ] Add optional high-contrast highlight for looked-at target blocks:
+- [x] Add mod configuration menu (client-side) for profile and accessibility preferences.
+- [x] Add keybinds for fast profile toggling and quick contrast settings.
+- [x] Add optional high-contrast highlight for looked-at target blocks:
   - subtle outline
-  - optional symbol marker beside crosshair
+  - evaluate an optional symbol marker beside the crosshair; remove it after playtesting showed that the outline is clearer
 - [ ] Run and document in-game playtests with the target player and iterate on feel tuning.
-- [ ] Add texture validation hooks into the build pipeline for profile assets.
-- [ ] Ensure `en_us`, `de_de`, and `nl_nl` parity for all new config and UI strings.
+- [x] Add texture validation hooks into the build pipeline for profile assets.
+- [x] Ensure `en_us`, `de_de`, and `nl_nl` parity for all new config and UI strings.
 
 ## 0.4.0 / Coverage Expansion (No X-ray, No Gameplay Advantage)
 

@@ -179,39 +179,22 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.register('validateBaselineResources') {
     group = 'verification'
-    description = 'Validates the 0.1.0 baseline textures and locale parity.'
+    description = 'Validates the shared baseline resources and locale parity.'
 
     def textureDirectory = layout.projectDirectory.dir('src/main/resources/assets/minecraft/textures/block')
-    def requiredTextures = ['andesite.png', 'gravel.png', 'iron_ore.png', 'coal_ore.png']
-    def forbiddenTextureOverrides = ['stone.png']
+    def forbiddenTextureOverrides = ['stone.png', 'andesite.png', 'gravel.png', 'iron_ore.png', 'coal_ore.png']
     def localeDirectory = layout.projectDirectory.dir('src/main/resources/assets/distinctcraft/lang')
     def requiredLocales = ['en_us.json', 'de_de.json', 'nl_nl.json']
     def smokeTestFile = layout.projectDirectory.file('src/main/resources/data/distinctcraft/function/baseline_smoke_test.mcfunction')
 
-    inputs.files(requiredTextures.collect { textureDirectory.file(it) })
     inputs.files(requiredLocales.collect { localeDirectory.file(it) })
     inputs.file(smokeTestFile)
 
     doLast {
-        requiredTextures.each { textureName ->
-            def textureFile = textureDirectory.file(textureName).asFile
-            if (!textureFile.isFile()) {
-                throw new GradleException("Missing baseline texture: ${textureFile}")
-            }
-
-            def image = javax.imageio.ImageIO.read(textureFile)
-            if (image == null) {
-                throw new GradleException("Unreadable PNG texture: ${textureFile}")
-            }
-            if (image.width != 16 || image.height != 16) {
-                throw new GradleException("Baseline texture must be 16 x 16: ${textureFile} is ${image.width} x ${image.height}")
-            }
-        }
-
         forbiddenTextureOverrides.each { textureName ->
             def textureFile = textureDirectory.file(textureName).asFile
             if (textureFile.exists()) {
-                throw new GradleException("Vanilla texture must not be overridden: ${textureFile}")
+                throw new GradleException("Profile texture must not leak into the always-active mod resources: ${textureFile}")
             }
         }
 
@@ -241,8 +224,128 @@ tasks.register('validateBaselineResources') {
     }
 }
 
+tasks.register('validateProfileResources') {
+    group = 'verification'
+    description = 'Validates all bundled 0.2.0 profile packs and texture variants.'
+
+    def profileRoot = layout.projectDirectory.dir('src/main/resources/resourcepacks')
+    def profiles = ['subtle', 'clear', 'monochrome']
+    def requiredTextures = ['andesite.png', 'gravel.png', 'iron_ore.png', 'coal_ore.png']
+    def profileRegistration = layout.projectDirectory.file('src/main/java/ch/minenox/distinctcraft/AccessibilityProfile.java')
+
+    inputs.dir(profileRoot)
+    inputs.file(profileRegistration)
+
+    doLast {
+        def registrationSource = profileRegistration.asFile.text
+        def textureHashes = requiredTextures.collectEntries { [(it): []] }
+
+        profiles.each { profile ->
+            if (!registrationSource.contains("\"${profile}\"")) {
+                throw new GradleException("Profile is not registered in AccessibilityProfile.java: ${profile}")
+            }
+
+            def profileDirectory = profileRoot.dir(profile)
+            def metadataFile = profileDirectory.file('pack.mcmeta').asFile
+            if (!metadataFile.isFile()) {
+                throw new GradleException("Missing pack metadata for profile ${profile}: ${metadataFile}")
+            }
+
+            def metadata = new groovy.json.JsonSlurper().parse(metadataFile)
+            if (metadata.pack?.min_format != [88, 0] || metadata.pack?.max_format != [88, 0]) {
+                throw new GradleException("Profile ${profile} must target resource format 88.0")
+            }
+            if (metadata.pack?.description?.translate != "pack.distinctcraft.profile.${profile}.description") {
+                throw new GradleException("Profile ${profile} has an incorrect translated description key")
+            }
+
+            requiredTextures.each { textureName ->
+                def textureFile = profileDirectory.file("assets/minecraft/textures/block/${textureName}").asFile
+                if (!textureFile.isFile()) {
+                    throw new GradleException("Missing ${profile} texture: ${textureFile}")
+                }
+
+                def image = javax.imageio.ImageIO.read(textureFile)
+                if (image == null || image.width != 16 || image.height != 16) {
+                    throw new GradleException("Profile texture must be a readable 16 x 16 PNG: ${textureFile}")
+                }
+
+                def digest = java.security.MessageDigest.getInstance('SHA-256').digest(textureFile.bytes).encodeHex().toString()
+                textureHashes[textureName] << digest
+            }
+
+            def stoneOverride = profileDirectory.file('assets/minecraft/textures/block/stone.png').asFile
+            if (stoneOverride.exists()) {
+                throw new GradleException("Profile ${profile} must preserve vanilla stone: ${stoneOverride}")
+            }
+        }
+
+        textureHashes.each { textureName, hashes ->
+            if (hashes.toSet().size() != profiles.size()) {
+                throw new GradleException("Every profile must provide a distinct ${textureName} variant")
+            }
+        }
+    }
+}
+
+tasks.register('validateClientUxResources') {
+    group = 'verification'
+    description = 'Validates the 0.3.0 client UX registration and translated controls.'
+
+    def javaRoot = layout.projectDirectory.dir('src/main/java/ch/minenox/distinctcraft')
+    def localeDirectory = layout.projectDirectory.dir('src/main/resources/assets/distinctcraft/lang')
+    def requiredLocales = ['en_us.json', 'de_de.json', 'nl_nl.json']
+    def requiredSources = [
+            'DistinctCraftConfig.java',
+            'DistinctCraftConfigScreen.java',
+            'DistinctCraftKeyMappings.java',
+            'DistinctCraftClientEvents.java',
+            'ProfileManager.java'
+    ]
+    def requiredKeys = [
+            'screen.distinctcraft.config.title',
+            'config.distinctcraft.profile',
+            'config.distinctcraft.target_outline',
+            'config.distinctcraft.target_outline.tooltip',
+            'key.category.distinctcraft.accessibility',
+            'key.distinctcraft.open_settings',
+            'key.distinctcraft.cycle_profile',
+            'key.distinctcraft.toggle_highlight',
+            'message.distinctcraft.profile_changed',
+            'message.distinctcraft.highlight_enabled',
+            'message.distinctcraft.highlight_disabled'
+    ]
+
+    inputs.files(requiredSources.collect { javaRoot.file(it) })
+    inputs.files(requiredLocales.collect { localeDirectory.file(it) })
+
+    doLast {
+        requiredSources.each { sourceName ->
+            if (!javaRoot.file(sourceName).asFile.isFile()) {
+                throw new GradleException("Missing 0.3.0 client UX source: ${sourceName}")
+            }
+        }
+
+        requiredLocales.each { localeName ->
+            def locale = new groovy.json.JsonSlurper().parse(localeDirectory.file(localeName).asFile)
+            requiredKeys.each { key ->
+                if (!locale.containsKey(key) || !locale[key]) {
+                    throw new GradleException("Missing translated 0.3.0 key ${key} in ${localeName}")
+                }
+            }
+        }
+
+        def clientEvents = javaRoot.file('DistinctCraftClientEvents.java').asFile.text
+        if (!clientEvents.contains('ExtractBlockOutlineRenderStateEvent') || !clientEvents.contains('TARGET_OUTLINE')) {
+            throw new GradleException('Target outline must remain optional and restricted to the vanilla looked-at block')
+        }
+    }
+}
+
 tasks.named('check').configure {
     dependsOn tasks.named('validateBaselineResources')
+    dependsOn tasks.named('validateProfileResources')
+    dependsOn tasks.named('validateClientUxResources')
 }
 
 def windowPositionHelper = layout.projectDirectory.file('tools/position-minecraft-window.ps1').asFile

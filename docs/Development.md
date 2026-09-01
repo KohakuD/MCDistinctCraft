@@ -12,7 +12,7 @@ On Windows, `runClient` starts a short-lived helper that places the Minecraft wi
 
 ## Resource validation
 
-The build runs `validateBaselineResources` automatically. It verifies that the four custom 0.1.0 block textures are present as 16 x 16 PNG files, vanilla stone is not overridden, the smoke-test function covers all five baseline blocks, and `en_us`, `de_de`, and `nl_nl` contain the same translation keys.
+The build runs `validateBaselineResources`, `validateProfileResources`, and `validateClientUxResources` automatically. They verify locale parity, smoke-test coverage, pack metadata, registration, complete 16 x 16 PNG sets for all profiles, distinct variants, the absence of a stone override, and the translated 0.3.0 controls.
 
 Regenerate the checked-in baseline textures after changing their pixel maps with:
 
@@ -22,4 +22,4 @@ Regenerate the checked-in baseline textures after changing their pixel maps with
 
 ## Compatibility
 
-DistinctCraft is client-side only and replaces vanilla block textures through the standard Minecraft resource system. Stone deliberately keeps its vanilla texture and acts as the neutral baseline. It does not require or use OptiFine. A resource pack loaded above mod resources can override the four custom textures; packs below them remain hidden for those blocks.
+DistinctCraft is client-side only and replaces vanilla block textures through standard bundled resource packs. Stone deliberately keeps its vanilla texture and acts as the neutral baseline. It does not require or use OptiFine. Third-party packs placed above the selected DistinctCraft profile can override its four custom textures.

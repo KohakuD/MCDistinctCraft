@@ -3,5 +3,22 @@
   "distinctcraft.accessibility.andesite": "Andesiet: horizontale streepjes",
   "distinctcraft.accessibility.gravel": "Grind: omlijnde kiezels",
   "distinctcraft.accessibility.iron_ore": "IJzererts: lichte hoeken",
-  "distinctcraft.accessibility.coal_ore": "Steenkoolerts: donkere kruisen"
+  "distinctcraft.accessibility.coal_ore": "Steenkoolerts: donkere kruisen",
+  "pack.distinctcraft.profile.subtle.name": "DistinctCraft: Subtiel",
+  "pack.distinctcraft.profile.subtle.description": "Zachte patronen met bijna origineel contrast",
+  "pack.distinctcraft.profile.clear.name": "DistinctCraft: Duidelijk",
+  "pack.distinctcraft.profile.clear.description": "Sterke patronen met gebalanceerd contrast (standaard)",
+  "pack.distinctcraft.profile.monochrome.name": "DistinctCraft: Monochroom",
+  "pack.distinctcraft.profile.monochrome.description": "Maximaal helderheidscontrast zonder kleursignalen",
+  "screen.distinctcraft.config.title": "DistinctCraft-toegankelijkheid",
+  "config.distinctcraft.profile": "Textuurprofiel",
+  "config.distinctcraft.target_outline": "Doelomlijning",
+  "config.distinctcraft.target_outline.tooltip": "Tekent een heldere tweekleurige omlijning rond het zichtbare blok onder het dradenkruis.",
+  "key.category.distinctcraft.accessibility": "DistinctCraft",
+  "key.distinctcraft.open_settings": "Toegankelijkheidsinstellingen openen",
+  "key.distinctcraft.cycle_profile": "Textuurprofiel wisselen",
+  "key.distinctcraft.toggle_highlight": "Doelomlijning in- of uitschakelen",
+  "message.distinctcraft.profile_changed": "Profiel: %s",
+  "message.distinctcraft.highlight_enabled": "Doelomlijning ingeschakeld",
+  "message.distinctcraft.highlight_disabled": "Doelomlijning uitgeschakeld"
 }

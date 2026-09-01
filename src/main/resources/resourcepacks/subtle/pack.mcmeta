@@ -1,0 +1,9 @@
+{
+  "pack": {
+    "description": {
+      "translate": "pack.distinctcraft.profile.subtle.description"
+    },
+    "min_format": [88, 0],
+    "max_format": [88, 0]
+  }
+}

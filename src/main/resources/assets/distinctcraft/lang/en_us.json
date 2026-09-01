@@ -3,5 +3,22 @@
   "distinctcraft.accessibility.andesite": "Andesite: horizontal dashes",
   "distinctcraft.accessibility.gravel": "Gravel: outlined pebbles",
   "distinctcraft.accessibility.iron_ore": "Iron ore: light angles",
-  "distinctcraft.accessibility.coal_ore": "Coal ore: dark crosses"
+  "distinctcraft.accessibility.coal_ore": "Coal ore: dark crosses",
+  "pack.distinctcraft.profile.subtle.name": "DistinctCraft: Subtle",
+  "pack.distinctcraft.profile.subtle.description": "Gentle patterns with near-vanilla contrast",
+  "pack.distinctcraft.profile.clear.name": "DistinctCraft: Clear",
+  "pack.distinctcraft.profile.clear.description": "Strong patterns with balanced contrast (default)",
+  "pack.distinctcraft.profile.monochrome.name": "DistinctCraft: Monochrome",
+  "pack.distinctcraft.profile.monochrome.description": "Maximum luminance contrast without color cues",
+  "screen.distinctcraft.config.title": "DistinctCraft accessibility settings",
+  "config.distinctcraft.profile": "Texture profile",
+  "config.distinctcraft.target_outline": "Target outline",
+  "config.distinctcraft.target_outline.tooltip": "Draw a bright two-tone outline around the visible block under the crosshair.",
+  "key.category.distinctcraft.accessibility": "DistinctCraft",
+  "key.distinctcraft.open_settings": "Open accessibility settings",
+  "key.distinctcraft.cycle_profile": "Cycle texture profile",
+  "key.distinctcraft.toggle_highlight": "Toggle target outline",
+  "message.distinctcraft.profile_changed": "Profile: %s",
+  "message.distinctcraft.highlight_enabled": "Target outline enabled",
+  "message.distinctcraft.highlight_disabled": "Target outline disabled"
 }
