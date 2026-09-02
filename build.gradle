@@ -14,7 +14,7 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
+version = "${mod_version}-mc${minecraft_version}"
 group = mod_group_id
 
 sourceSets.main.resources {
@@ -34,7 +34,7 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 25 to end users in 26.2, so mods should target Java 25.
+// Mojang ships Java 25 to end users in 26.1.2, so mods should target Java 25.
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
@@ -271,8 +271,8 @@ tasks.register('validateProfileResources') {
             }
 
             def metadata = new groovy.json.JsonSlurper().parse(metadataFile)
-            if (metadata.pack?.min_format != [88, 0] || metadata.pack?.max_format != [88, 0]) {
-                throw new GradleException("Profile ${profile} must target resource format 88.0")
+            if (metadata.pack?.min_format != [84, 0] || metadata.pack?.max_format != [84, 0]) {
+                throw new GradleException("Profile ${profile} must target resource format 84.0")
             }
             if (metadata.pack?.description?.translate != "pack.distinctcraft.profile.${profile}.description") {
                 throw new GradleException("Profile ${profile} has an incorrect translated description key")
@@ -482,12 +482,12 @@ tasks.register('validateCoverageResources') {
         try {
             blockNames.each { blockName ->
                 if (zip.getEntry("assets/minecraft/blockstates/${blockName}.json") == null) {
-                    throw new GradleException("Unknown Minecraft 26.2 block in coverage manifest: ${blockName}")
+                    throw new GradleException("Unknown Minecraft 26.1.2 block in coverage manifest: ${blockName}")
                 }
             }
             itemNames.each { itemName ->
                 if (zip.getEntry("assets/minecraft/items/${itemName}.json") == null) {
-                    throw new GradleException("Unknown Minecraft 26.2 item in coverage manifest: ${itemName}")
+                    throw new GradleException("Unknown Minecraft 26.1.2 item in coverage manifest: ${itemName}")
                 }
             }
         }
@@ -527,11 +527,11 @@ tasks.register('validateCompatibilityResources') {
         if (manifest.providers.keySet() as Set != ['jade', 'wthit'] as Set) {
             throw new GradleException('Compatibility matrix must contain exactly Jade and WTHIT')
         }
-        if (manifest.providers.jade.version != '26.2.10+neoforge') {
-            throw new GradleException('Jade compatibility must remain pinned to 26.2.10+neoforge for 0.5.0')
+        if (manifest.providers.jade.version != '26.1.10+neoforge') {
+            throw new GradleException('Jade compatibility must remain pinned to 26.1.10+neoforge for the Minecraft 26.1.2 port')
         }
-        if (manifest.providers.wthit.version != 'neo-20.0.0') {
-            throw new GradleException('WTHIT compatibility must remain pinned to neo-20.0.0 for 0.5.0')
+        if (manifest.providers.wthit.version != 'neo-19.0.1') {
+            throw new GradleException('WTHIT compatibility must remain pinned to neo-19.0.1 for the Minecraft 26.1.2 port')
         }
 
         def filenames = []

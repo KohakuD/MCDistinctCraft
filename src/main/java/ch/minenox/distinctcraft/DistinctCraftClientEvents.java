@@ -2,6 +2,7 @@ package ch.minenox.distinctcraft;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -43,7 +44,11 @@ public final class DistinctCraftClientEvents {
             return;
         }
 
-        event.addCustomRenderer((renderState, submitNodeCollector, poseStack, levelRenderState) -> {
+        event.addCustomRenderer((renderState, bufferSource, poseStack, translucentPass, levelRenderState) -> {
+            if (renderState.isTranslucent() != translucentPass) {
+                return false;
+            }
+
             Vec3 cameraPosition = levelRenderState.cameraRenderState.pos;
             BlockPos pos = renderState.pos();
             poseStack.pushPose();
@@ -52,20 +57,24 @@ public final class DistinctCraftClientEvents {
                         pos.getX() - cameraPosition.x,
                         pos.getY() - cameraPosition.y,
                         pos.getZ() - cameraPosition.z);
-                submitNodeCollector.submitShapeOutline(
+                ShapeRenderer.renderShape(
                         poseStack,
+                        bufferSource.getBuffer(RenderTypes.secondaryBlockOutline()),
                         renderState.shape(),
-                        RenderTypes.secondaryBlockOutline(),
+                        0.0,
+                        0.0,
+                        0.0,
                         OUTLINE_DARK,
-                        5.0F,
-                        renderState.isTranslucent());
-                submitNodeCollector.submitShapeOutline(
+                        5.0F);
+                ShapeRenderer.renderShape(
                         poseStack,
+                        bufferSource.getBuffer(RenderTypes.lines()),
                         renderState.shape(),
-                        RenderTypes.lines(),
+                        0.0,
+                        0.0,
+                        0.0,
                         OUTLINE_BRIGHT,
-                        2.0F,
-                        renderState.isTranslucent());
+                        2.0F);
             } finally {
                 poseStack.popPose();
             }

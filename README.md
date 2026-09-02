@@ -7,8 +7,8 @@ DistinctCraft makes Minecraft blocks and ores easier to distinguish through acce
 
 ## Technical foundation
 
-- Minecraft 26.2
-- NeoForge 26.2.0.75
+- Minecraft 26.1.2
+- NeoForge 26.1.2.71 or newer for Minecraft 26.1.2
 - Java 25
 - Mod ID: `distinctcraft`
 - Client-side only
@@ -22,7 +22,7 @@ DistinctCraft makes Minecraft blocks and ores easier to distinguish through acce
 
 ## Accessibility profiles and controls
 
-Version 0.6.0 includes the built-in `clear`, `subtle`, and `monochrome` profiles, an in-game accessibility screen, quick profile switching, optional target feedback, all standard Overworld ore variants, Nether quartz and gold, and matching primary drops. Jade and WTHIT are supported as optional, mutually exclusive overlay mods for compatibility testing; Jade is the preferred local test provider. See [docs/Profiles.md](docs/Profiles.md), [docs/Accessibility.md](docs/Accessibility.md), [docs/No-Xray.md](docs/No-Xray.md), [docs/Future-Extensions.md](docs/Future-Extensions.md), and [docs/testing/0.5.0-compatibility.md](docs/testing/0.5.0-compatibility.md).
+This branch ports DistinctCraft 0.6.0 to Minecraft 26.1.2 while retaining the built-in `clear`, `subtle`, and `monochrome` profiles, the in-game accessibility screen, quick profile switching, optional target feedback, all standard Overworld ore variants, Nether quartz and gold, and matching primary drops. Jade and WTHIT remain optional, mutually exclusive overlay mods for compatibility testing; Jade is the preferred local test provider. See [docs/Profiles.md](docs/Profiles.md), [docs/Accessibility.md](docs/Accessibility.md), [docs/No-Xray.md](docs/No-Xray.md), [docs/Future-Extensions.md](docs/Future-Extensions.md), and [docs/testing/0.6.0-26.1.2-port.md](docs/testing/0.6.0-26.1.2-port.md).
 
 ## License
 

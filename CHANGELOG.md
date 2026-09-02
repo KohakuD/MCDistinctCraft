@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 - Minecraft 26.1.2 port
+
+- Ported the complete DistinctCraft 0.6.0 feature set to Minecraft 26.1.2 and NeoForge 26.1.2.71 or newer.
+- Adapted the optional target outline to the Minecraft 26.1.2 rendering API.
+- Updated bundled accessibility profiles to resource-pack format 84.0.
+- Added the Minecraft target to the JAR filename while retaining `0.6.0` as the DistinctCraft version.
+- Pinned Jade 26.1.10 and WTHIT 19.0.1 for reproducible optional compatibility tests.
+
 ## 0.6.0 - Release readiness
 
 - Updated the public author identity and project links from ID7ZH to KohakuD.
