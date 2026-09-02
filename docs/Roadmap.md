@@ -34,7 +34,7 @@
 - [x] Add optional high-contrast highlight for looked-at target blocks:
   - subtle outline
   - evaluate an optional symbol marker beside the crosshair; remove it after playtesting showed that the outline is clearer
-- [ ] Run and document in-game playtests with the target player and iterate on feel tuning.
+- [x] Run and document in-game playtests with the target player and iterate on feel tuning.
 - [x] Add texture validation hooks into the build pipeline for profile assets.
 - [x] Ensure `en_us`, `de_de`, and `nl_nl` parity for all new config and UI strings.
 
@@ -60,6 +60,6 @@
 ## 0.6.0 / Release Readiness
 
 - [x] Add mod icon and polished metadata for distribution.
-- [ ] Include release screenshots for all profile modes and key screens.
-- [ ] Final QA for packaged resource validation, locale parity, and profile switching.
+- [x] Include release screenshots for all profile modes and key screens.
+- [x] Final QA for packaged resource validation, locale parity, and profile switching.
 - [ ] Publish CurseForge release with clear installation and usage notes.

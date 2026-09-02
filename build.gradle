@@ -607,6 +607,14 @@ tasks.register('validateReleaseResources') {
     def logoSource = layout.projectDirectory.file('docs/assets/branding/distinctcraft-logo.svg')
     def curseForgeLogo = layout.projectDirectory.file('docs/assets/branding/distinctcraft-logo.png')
     def brandingExporter = layout.projectDirectory.file('tools/export-branding.ps1')
+    def releaseScreenshotDirectory = layout.projectDirectory.dir('docs/images/release')
+    def requiredReleaseScreenshots = [
+            'distinctcraft-clear.jpg',
+            'distinctcraft-subtle.jpg',
+            'distinctcraft-monochrome.jpg',
+            'distinctcraft-settings.jpg',
+            'distinctcraft-target-outline-jade.jpg'
+    ]
     def noticeFile = layout.projectDirectory.file('NOTICE.md')
     def requiredReleaseFiles = [
             'LICENSE',
@@ -616,12 +624,14 @@ tasks.register('validateReleaseResources') {
             'SUPPORT.md',
             'docs/Branding.md',
             'docs/CurseForge.md',
+            'docs/testing/0.6.0-release.md',
             '.github/ISSUE_TEMPLATE/bug_report.yml',
             '.github/ISSUE_TEMPLATE/accessibility_feedback.yml'
     ].collect { layout.projectDirectory.file(it) }
 
     inputs.files(propertiesFile, metadataTemplate, generatedMetadata, modLogo, logoSource, curseForgeLogo, brandingExporter, packagedJar)
     inputs.files(requiredReleaseFiles)
+    inputs.files(requiredReleaseScreenshots.collect { releaseScreenshotDirectory.file(it) })
 
     doLast {
         def properties = new Properties()
@@ -644,12 +654,12 @@ tasks.register('validateReleaseResources') {
 
         def template = metadataTemplate.asFile.text
         def generated = generatedMetadata.get().asFile.text
-        ['https://github.com/KohakuD/MCDistinctCraft', 'logoFile="distinctcraft.png"'].each { expected ->
+        ['https://github.com/KohakuD/MCDistinctCraft', 'iconFile="distinctcraft.png"'].each { expected ->
             if (!template.contains(expected)) {
                 throw new GradleException("Mod metadata template is missing: ${expected}")
             }
         }
-        ['version="0.6.0"', 'authors="KohakuD"', 'logoFile="distinctcraft.png"'].each { expected ->
+        ['version="0.6.0"', 'authors="KohakuD"', 'iconFile="distinctcraft.png"'].each { expected ->
             if (!generated.contains(expected)) {
                 throw new GradleException("Generated mod metadata is missing: ${expected}")
             }
@@ -663,6 +673,14 @@ tasks.register('validateReleaseResources') {
         }
         validatePng(modLogo.asFile, 256, 'Packaged mod logo')
         validatePng(curseForgeLogo.asFile, 1024, 'CurseForge logo export')
+
+        requiredReleaseScreenshots.each { screenshotName ->
+            def screenshotFile = releaseScreenshotDirectory.file(screenshotName).asFile
+            def screenshot = javax.imageio.ImageIO.read(screenshotFile)
+            if (screenshot == null || screenshot.width != 1600 || screenshot.height < 900) {
+                throw new GradleException("Release screenshot must be a readable 1600 px wide image: ${screenshotFile}")
+            }
+        }
 
         def documentBuilderFactory = javax.xml.parsers.DocumentBuilderFactory.newInstance()
         documentBuilderFactory.setNamespaceAware(true)

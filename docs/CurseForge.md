@@ -54,6 +54,16 @@ CurseForge comments may be used for short questions. Reproducible bugs and acces
 - Select the custom dual-license description above and link the repository `LICENSE`
 - Upload screenshots for Clear, Subtle, Monochrome, and the settings/target-outline experience
 
+## Screenshot gallery
+
+Upload the checked-in release images in this order:
+
+1. `docs/images/release/distinctcraft-clear.jpg` — Clear profile across all supported ore families.
+2. `docs/images/release/distinctcraft-subtle.jpg` — Subtle profile from the same viewpoint.
+3. `docs/images/release/distinctcraft-monochrome.jpg` — Monochrome profile from the same viewpoint.
+4. `docs/images/release/distinctcraft-settings.jpg` — In-game profile and target-outline settings.
+5. `docs/images/release/distinctcraft-target-outline-jade.jpg` — Optional target outline. The small Jade overlay is intentionally visible to demonstrate compatibility; Jade is not required by DistinctCraft.
+
 ## Notice
 
 NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.

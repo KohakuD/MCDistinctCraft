@@ -29,8 +29,8 @@ displayName="${mod_name}" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://github.com/KohakuD/MCDistinctCraft"
 
-# A file name (in the root of the mod JAR) containing a logo for display
-logoFile="distinctcraft.png" #optional
+# A square icon in the root of the mod JAR, displayed in NeoForge's mod UI
+iconFile="distinctcraft.png" #optional
 
 # A text field displayed in the mod UI
 #credits="" #optional

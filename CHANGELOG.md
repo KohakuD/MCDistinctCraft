@@ -5,8 +5,10 @@
 - Updated the public author identity and project links from ID7ZH to KohakuD.
 - Added structured GitHub forms for bug reports and accessibility feedback.
 - Licensed source code under MIT and original DistinctCraft visual assets under CC BY 4.0, with explicit Minecraft and third-party exclusions.
-- Added an original, editable SVG brand symbol plus optimized NeoForge and CurseForge PNG exports.
+- Added an original, editable SVG brand symbol plus optimized NeoForge and CurseForge PNG exports using NeoForge's current `iconFile` metadata.
 - Added automated release validation for identity, licensing, support files, branding, and packaged metadata.
+- Added a consistent release gallery for Clear, Subtle, Monochrome, settings, and the optional target outline with Jade compatibility visible.
+- Completed final in-game QA for profile switching, target-player feedback, packaged resources, locale parity, startup logs, and the release JAR.
 
 ## 0.5.0 - Compatibility and future extensions
 
